@@ -19,7 +19,7 @@ echo 		██║  ██║██╔══██╗██╔═══╝      �
 echo 		██████╔╝██║  ██║██║          ██║ ╚═╝ ██║╚██████╔╝███████╗██║   ██║      ██║   ╚██████╔╝╚██████╔╝███████╗
 echo 		╚═════╝ ╚═╝  ╚═╝╚═╝          ╚═╝     ╚═╝ ╚═════╝ ╚══════╝╚═╝   ╚═╝      ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝
 echo.
-echo  IF THIS LOOKS WEIRD, GO TO CMD AS ADMIN, RIGHT CLICK THE TITLE, CLICK DEFAULTS, GO TO "TERMINAL", THEN AT "DEFAULT TERMINAL APP..", MAKE IT WCH.
+echo.
 echo.
 echo.
 echo 			════════════════════════════════════════════════════════════════════════════════════════════════════
@@ -31,10 +31,11 @@ echo 					  7) spam a playfab	       8) create your own personal playfab BOT
 echo				  	  	  9) spam a webhook	       10) check if a webhook is valid or not
 echo					  	  11) delete a webhook	       12) send a webhook message
 echo 					  13) get webhook info	       14) ip lookup
+echo					  	  15) phone number lookup
 echo.
 echo 			════════════════════════════════════════════════════════════════════════════════════════════════════
 
-set /p choice=					Choose an option (1-14): 
+set /p choice="				Choose an option (1-15): "
 
 if "%choice%"=="1" goto ipconfig
 if "%choice%"=="2" goto notepad
@@ -42,7 +43,6 @@ if "%choice%"=="6" goto exit
 if "%choice%"=="3" goto pingcustom
 if "%choice%"=="4" goto joindiscord
 if "%choice%"=="5" goto invitebot
-if "%choice%"=="0" goto special
 if "%choice%"=="7" goto spam 
 if "%choice%"=="8" goto playfab
 if "%choice%"=="9" goto webhook
@@ -51,7 +51,7 @@ if "%choice%"=="11" goto webhookdelete
 if "%choice%"=="12" goto webhooksend
 if "%choice%"=="13" goto webhookinfo
 if "%choice%"=="14" goto iplookup
-if "%choice%"=="15" goto discordserver
+if "%choice%"=="15" goto phonenumblookup
 
 goto banner
 
@@ -101,20 +101,6 @@ echo $kickall    - kicks all members
 echo $kickbots   - kick all bots in server
 echo $banall   - Ban all members
 echo ===============================================
-pause
-goto banner
-
-:special
-cls
-start "" "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-echo.
-echo.
-echo.
-echo.
-echo.
-echo ===================================
-echo Goose Was Here Love ya DRP ^<3
-echo ===================================
 pause
 goto banner
 
@@ -375,10 +361,13 @@ pause
 goto banner
 :webhookinfo
 @echo off
-cls
 setlocal
-set /p WEBHOOK_URL="webhook url: "
-curl -s -X GET %WEBHOOK_URL%
+cls
+set /p WEBHOOK_URL=webhook url:
+
+
+powershell -Command "Invoke-RestMethod -Uri '%WEBHOOK_URL%' | ConvertTo-Json -Depth 10"
+
 endlocal
 pause
 goto banner
@@ -386,57 +375,355 @@ goto banner
 :iplookup
 @echo off
 cls
+
+
 set /p ip=Enter IP address to look up: 
-echo Looking up IP address...
-curl -s http://ip-api.com/json/%ip% > "%temp%\iplookup.json"
 
 
-echo ----------------------------------------
-type "%temp%\iplookup.json"
-echo ----------------------------------------
+curl -s http://ip-api.com/json/%ip% > "%temp%\ipdata.json"
 
+
+set "psfile=%temp%\iplocator.ps1"
+(
+echo $d = Get-Content '%temp%\ipdata.json' ^| ConvertFrom-Json
+echo Write-Output "IP: $($d.query)"
+echo Write-Output "Country: $($d.country)"
+echo Write-Output "Region: $($d.regionName)"
+echo Write-Output "City: $($d.city)"
+echo Write-Output "ISP: $($d.isp)"
+echo Write-Output "Org: $($d.org)"
+) > "%psfile%"
+
+
+powershell -NoProfile -ExecutionPolicy Bypass -File "%psfile%"
+
+
+del "%psfile%"
+del "%temp%\ipdata.json"
 pause
 goto banner
-
-:discordserver
+:phonenumblookup
 @echo off
+setlocal enabledelayedexpansion
 cls
-setlocal
-set /p token=Enter your Discord bot token: 
-set "pyfile=__temp_dsinfo.py"
-set "outputfile=%~f0"  :: This batch file
+set /p phone="Enter phone number: "
+set area=!phone:~0,3!
+if "!area!"=="201" echo Likely location: New Jersey & goto end
+if "!area!"=="202" echo Likely location: Washington, DC & goto end
+if "!area!"=="203" echo Likely location: Connecticut & goto end
+if "!area!"=="204" echo Likely location: Manitoba, Canada & goto end
+if "!area!"=="205" echo Likely location: Alabama & goto end
+if "!area!"=="206" echo Likely location: Seattle, WA & goto end
+if "!area!"=="207" echo Likely location: Maine & goto end
+if "!area!"=="208" echo Likely location: Idaho & goto end
+if "!area!"=="209" echo Likely location: California & goto end
+if "!area!"=="210" echo Likely location: San Antonio, TX & goto end
+if "!area!"=="212" echo Likely location: New York, NY & goto end
+if "!area!"=="213" echo Likely location: Los Angeles, CA & goto end
+if "!area!"=="214" echo Likely location: Dallas, TX & goto end
+if "!area!"=="215" echo Likely location: Philadelphia, PA & goto end
+if "!area!"=="216" echo Likely location: Cleveland, OH & goto end
+if "!area!"=="217" echo Likely location: Illinois & goto end
+if "!area!"=="218" echo Likely location: Minnesota & goto end
+if "!area!"=="219" echo Likely location: Indiana & goto end
+if "!area!"=="224" echo Likely location: Illinois & goto end
+if "!area!"=="225" echo Likely location: Louisiana & goto end
+if "!area!"=="228" echo Likely location: Mississippi & goto end
+if "!area!"=="229" echo Likely location: Georgia & goto end
+if "!area!"=="231" echo Likely location: Michigan & goto end
+if "!area!"=="234" echo Likely location: Ohio & goto end
+if "!area!"=="239" echo Likely location: Florida & goto end
+if "!area!"=="240" echo Likely location: Maryland & goto end
+if "!area!"=="248" echo Likely location: Michigan & goto end
+if "!area!"=="250" echo Likely location: British Columbia, Canada & goto end
+if "!area!"=="251" echo Likely location: Alabama & goto end
+if "!area!"=="252" echo Likely location: North Carolina & goto end
+if "!area!"=="253" echo Likely location: Washington & goto end
+if "!area!"=="254" echo Likely location: Texas & goto end
+if "!area!"=="256" echo Likely location: Alabama & goto end
+if "!area!"=="260" echo Likely location: Indiana & goto end
+if "!area!"=="262" echo Likely location: Wisconsin & goto end
+if "!area!"=="267" echo Likely location: Philadelphia, PA & goto end
+if "!area!"=="269" echo Likely location: Michigan & goto end
+if "!area!"=="270" echo Likely location: Kentucky & goto end
+if "!area!"=="276" echo Likely location: Virginia & goto end
+if "!area!"=="281" echo Likely location: Houston, TX & goto end
+if "!area!"=="289" echo Likely location: Ontario, Canada & goto end
+if "!area!"=="301" echo Likely location: Maryland & goto end
+if "!area!"=="302" echo Likely location: Delaware & goto end
+if "!area!"=="303" echo Likely location: Denver, CO & goto end
+if "!area!"=="304" echo Likely location: West Virginia & goto end
+if "!area!"=="305" echo Likely location: Miami, FL & goto end
+if "!area!"=="306" echo Likely location: Saskatchewan, Canada & goto end
+if "!area!"=="307" echo Likely location: Wyoming & goto end
+if "!area!"=="308" echo Likely location: Nebraska & goto end
+if "!area!"=="309" echo Likely location: Illinois & goto end
+if "!area!"=="310" echo Likely location: California & goto end
+if "!area!"=="312" echo Likely location: Chicago, IL & goto end
+if "!area!"=="313" echo Likely location: Detroit, MI & goto end
+if "!area!"=="314" echo Likely location: St. Louis, MO & goto end
+if "!area!"=="315" echo Likely location: New York & goto end
+if "!area!"=="316" echo Likely location: Kansas & goto end
+if "!area!"=="317" echo Likely location: Indiana & goto end
+if "!area!"=="318" echo Likely location: Louisiana & goto end
+if "!area!"=="319" echo Likely location: Iowa & goto end
+if "!area!"=="320" echo Likely location: Minnesota & goto end
+if "!area!"=="321" echo Likely location: Florida & goto end
+if "!area!"=="323" echo Likely location: Los Angeles, CA & goto end
+if "!area!"=="325" echo Likely location: Texas & goto end
+if "!area!"=="330" echo Likely location: Ohio & goto end
+if "!area!"=="331" echo Likely location: Illinois & goto end
+if "!area!"=="334" echo Likely location: Alabama & goto end
+if "!area!"=="336" echo Likely location: North Carolina & goto end
+if "!area!"=="337" echo Likely location: Louisiana & goto end
+if "!area!"=="339" echo Likely location: Massachusetts & goto end
+if "!area!"=="347" echo Likely location: New York, NY & goto end
+if "!area!"=="351" echo Likely location: Massachusetts & goto end
+if "!area!"=="352" echo Likely location: Florida & goto end
+if "!area!"=="360" echo Likely location: Washington & goto end
+if "!area!"=="361" echo Likely location: Texas & goto end
+if "!area!"=="385" echo Likely location: Utah & goto end
+if "!area!"=="386" echo Likely location: Florida & goto end
+if "!area!"=="401" echo Likely location: Rhode Island & goto end
+if "!area!"=="402" echo Likely location: Nebraska & goto end
+if "!area!"=="403" echo Likely location: Alberta, Canada & goto end
+if "!area!"=="404" echo Likely location: Atlanta, GA & goto end
+if "!area!"=="405" echo Likely location: Oklahoma & goto end
+if "!area!"=="406" echo Likely location: Montana & goto end
+if "!area!"=="407" echo Likely location: Orlando, FL & goto end
+if "!area!"=="408" echo Likely location: San Jose, CA & goto end
+if "!area!"=="409" echo Likely location: Texas & goto end
+if "!area!"=="410" echo Likely location: Maryland & goto end
+if "!area!"=="412" echo Likely location: Pittsburgh, PA & goto end
+if "!area!"=="413" echo Likely location: Massachusetts & goto end
+if "!area!"=="414" echo Likely location: Milwaukee, WI & goto end
+if "!area!"=="415" echo Likely location: San Francisco, CA & goto end
+if "!area!"=="416" echo Likely location: Toronto, ON & goto end
+if "!area!"=="417" echo Likely location: Missouri & goto end
+if "!area!"=="418" echo Likely location: Quebec, Canada & goto end
+if "!area!"=="419" echo Likely location: Ohio & goto end
+if "!area!"=="423" echo Likely location: Tennessee & goto end
+if "!area!"=="424" echo Likely location: California & goto end
+if "!area!"=="425" echo Likely location: Washington & goto end
+if "!area!"=="430" echo Likely location: Texas & goto end
+if "!area!"=="432" echo Likely location: Texas & goto end
+if "!area!"=="434" echo Likely location: Virginia & goto end
+if "!area!"=="435" echo Likely location: Utah & goto end
+if "!area!"=="440" echo Likely location: Ohio & goto end
+if "!area!"=="442" echo Likely location: California & goto end
+if "!area!"=="443" echo Likely location: Maryland & goto end
+if "!area!"=="450" echo Likely location: Quebec, Canada & goto end
+if "!area!"=="458" echo Likely location: Oregon & goto end
+if "!area!"=="469" echo Likely location: Texas & goto end
+if "!area!"=="470" echo Likely location: Georgia & goto end
+if "!area!"=="475" echo Likely location: Connecticut & goto end
+if "!area!"=="478" echo Likely location: Georgia & goto end
+if "!area!"=="479" echo Likely location: Arkansas & goto end
+if "!area!"=="480" echo Likely location: Arizona & goto end
+if "!area!"=="484" echo Likely location: Pennsylvania & goto end
+if "!area!"=="501" echo Likely location: Arkansas & goto end
+if "!area!"=="502" echo Likely location: Kentucky & goto end
+if "!area!"=="503" echo Likely location: Oregon & goto end
+if "!area!"=="504" echo Likely location: New Orleans, LA & goto end
+if "!area!"=="505" echo Likely location: New Mexico & goto end
+if "!area!"=="506" echo Likely location: New Brunswick, Canada & goto end
+if "!area!"=="507" echo Likely location: Minnesota & goto end
+if "!area!"=="508" echo Likely location: Massachusetts & goto end
+if "!area!"=="509" echo Likely location: Washington & goto end
+if "!area!"=="510" echo Likely location: Oakland, CA & goto end
+if "!area!"=="512" echo Likely location: Austin, TX & goto end
+if "!area!"=="513" echo Likely location: Cincinnati, OH & goto end
+if "!area!"=="514" echo Likely location: Montreal, QC & goto end
+if "!area!"=="515" echo Likely location: Iowa & goto end
+if "!area!"=="516" echo Likely location: Long Island, NY & goto end
+if "!area!"=="517" echo Likely location: Michigan & goto end
+if "!area!"=="518" echo Likely location: New York & goto end
+if "!area!"=="519" echo Likely location: Ontario, Canada & goto end
+if "!area!"=="520" echo Likely location: Arizona & goto end
+if "!area!"=="530" echo Likely location: California & goto end
+if "!area!"=="531" echo Likely location: Nebraska & goto end
+if "!area!"=="534" echo Likely location: Wisconsin & goto end
+if "!area!"=="539" echo Likely location: Oklahoma & goto end
+if "!area!"=="540" echo Likely location: Virginia & goto end
+if "!area!"=="541" echo Likely location: Oregon & goto end
+if "!area!"=="551" echo Likely location: New Jersey & goto end
+if "!area!"=="559" echo Likely location: California & goto end
+if "!area!"=="561" echo Likely location: Florida & goto end
+if "!area!"=="562" echo Likely location: California & goto end
+if "!area!"=="563" echo Likely location: Iowa & goto end
+if "!area!"=="567" echo Likely location: Ohio & goto end
+if "!area!"=="570" echo Likely location: Pennsylvania & goto end
+if "!area!"=="571" echo Likely location: Virginia & goto end
+if "!area!"=="573" echo Likely location: Missouri & goto end
+if "!area!"=="574" echo Likely location: Indiana & goto end
+if "!area!"=="580" echo Likely location: Oklahoma & goto end
+if "!area!"=="585" echo Likely location: New York & goto end
+if "!area!"=="586" echo Likely location: Michigan & goto end
+if "!area!"=="601" echo Likely location: Mississippi & goto end
+if "!area!"=="602" echo Likely location: Phoenix, AZ & goto end
+if "!area!"=="603" echo Likely location: New Hampshire & goto end
+if "!area!"=="604" echo Likely location: British Columbia, Canada & goto end
+if "!area!"=="605" echo Likely location: South Dakota & goto end
+if "!area!"=="606" echo Likely location: Kentucky & goto end
+if "!area!"=="607" echo Likely location: New York & goto end
+if "!area!"=="608" echo Likely location: Wisconsin & goto end
+if "!area!"=="609" echo Likely location: New Jersey & goto end
+if "!area!"=="610" echo Likely location: Pennsylvania & goto end
+if "!area!"=="612" echo Likely location: Minneapolis, MN & goto end
+if "!area!"=="613" echo Likely location: Ontario, Canada & goto end
+if "!area!"=="614" echo Likely location: Columbus, OH & goto end
+if "!area!"=="615" echo Likely location: Nashville, TN & goto end
+if "!area!"=="616" echo Likely location: Michigan & goto end
+if "!area!"=="617" echo Likely location: Boston, MA & goto end
+if "!area!"=="618" echo Likely location: Illinois & goto end
+if "!area!"=="619" echo Likely location: San Diego, CA & goto end
+if "!area!"=="620" echo Likely location: Kansas & goto end
+if "!area!"=="623" echo Likely location: Arizona & goto end
+if "!area!"=="626" echo Likely location: California & goto end
+if "!area!"=="628" echo Likely location: California & goto end
+if "!area!"=="630" echo Likely location: Illinois & goto end
+if "!area!"=="631" echo Likely location: Long Island, NY & goto end
+if "!area!"=="636" echo Likely location: Missouri & goto end
+if "!area!"=="641" echo Likely location: Iowa & goto end
+if "!area!"=="646" echo Likely location: New York, NY & goto end
+if "!area!"=="650" echo Likely location: California & goto end
+if "!area!"=="651" echo Likely location: Minnesota & goto end
+if "!area!"=="657" echo Likely location: California & goto end
+if "!area!"=="660" echo Likely location: Missouri & goto end
+if "!area!"=="661" echo Likely location: California & goto end
+if "!area!"=="662" echo Likely location: Mississippi & goto end
+if "!area!"=="678" echo Likely location: Georgia & goto end
+if "!area!"=="682" echo Likely location: Texas & goto end
+if "!area!"=="701" echo Likely location: North Dakota & goto end
+if "!area!"=="702" echo Likely location: Las Vegas, NV & goto end
+if "!area!"=="703" echo Likely location: Northern VA & goto end
+if "!area!"=="704" echo Likely location: Charlotte, NC & goto end
+if "!area!"=="705" echo Likely location: Ontario, Canada & goto end
+if "!area!"=="706" echo Likely location: Georgia & goto end
+if "!area!"=="707" echo Likely location: California & goto end
+if "!area!"=="708" echo Likely location: Illinois & goto end
+if "!area!"=="712" echo Likely location: Iowa & goto end
+if "!area!"=="713" echo Likely location: Houston, TX & goto end
+if "!area!"=="714" echo Likely location: California & goto end
+if "!area!"=="715" echo Likely location: Wisconsin & goto end
+if "!area!"=="716" echo Likely location: Buffalo, NY & goto end
+if "!area!"=="717" echo Likely location: Pennsylvania & goto end
+if "!area!"=="718" echo Likely location: New York, NY & goto end
+if "!area!"=="719" echo Likely location: Colorado & goto end
+if "!area!"=="720" echo Likely location: Colorado & goto end
+if "!area!"=="724" echo Likely location: Pennsylvania & goto end
+if "!area!"=="727" echo Likely location: Florida & goto end
+if "!area!"=="731" echo Likely location: Tennessee & goto end
+if "!area!"=="732" echo Likely location: New Jersey & goto end
+if "!area!"=="734" echo Likely location: Michigan & goto end
+if "!area!"=="737" echo Likely location: Texas & goto end
+if "!area!"=="740" echo Likely location: Ohio & goto end
+if "!area!"=="754" echo Likely location: Florida & goto end
+if "!area!"=="757" echo Likely location: Virginia & goto end
+if "!area!"=="760" echo Likely location: California & goto end
+if "!area!"=="763" echo Likely location: Minnesota & goto end
+if "!area!"=="765" echo Likely location: Indiana & goto end
+if "!area!"=="769" echo Likely location: Mississippi & goto end
+if "!area!"=="770" echo Likely location: Georgia & goto end
+if "!area!"=="772" echo Likely location: Florida & goto end
+if "!area!"=="773" echo Likely location: Chicago, IL & goto end
+if "!area!"=="774" echo Likely location: Massachusetts & goto end
+if "!area!"=="775" echo Likely location: Nevada & goto end
+if "!area!"=="778" echo Likely location: British Columbia, Canada & goto end
+if "!area!"=="779" echo Likely location: Illinois & goto end
+if "!area!"=="780" echo Likely location: Alberta, Canada & goto end
+if "!area!"=="781" echo Likely location: Massachusetts & goto end
+if "!area!"=="785" echo Likely location: Kansas & goto end
+if "!area!"=="786" echo Likely location: Florida & goto end
+if "!area!"=="801" echo Likely location: Utah & goto end
+if "!area!"=="802" echo Likely location: Vermont & goto end
+if "!area!"=="803" echo Likely location: South Carolina & goto end
+if "!area!"=="804" echo Likely location: Richmond, VA & goto end
+if "!area!"=="805" echo Likely location: California & goto end
+if "!area!"=="806" echo Likely location: Texas & goto end
+if "!area!"=="808" echo Likely location: Hawaii & goto end
+if "!area!"=="810" echo Likely location: Michigan & goto end
+if "!area!"=="812" echo Likely location: Indiana & goto end
+if "!area!"=="813" echo Likely location: Tampa, FL & goto end
+if "!area!"=="814" echo Likely location: Pennsylvania & goto end
+if "!area!"=="815" echo Likely location: Illinois & goto end
+if "!area!"=="816" echo Likely location: Kansas City, MO & goto end
+if "!area!"=="817" echo Likely location: Fort Worth, TX & goto end
+if "!area!"=="818" echo Likely location: California & goto end
+if "!area!"=="819" echo Likely location: Quebec, Canada & goto end
+if "!area!"=="828" echo Likely location: North Carolina & goto end
+if "!area!"=="830" echo Likely location: Texas & goto end
+if "!area!"=="831" echo Likely location: California & goto end
+if "!area!"=="832" echo Likely location: Houston, TX & goto end
+if "!area!"=="843" echo Likely location: South Carolina & goto end
+if "!area!"=="845" echo Likely location: New York & goto end
+if "!area!"=="847" echo Likely location: Illinois & goto end
+if "!area!"=="848" echo Likely location: New Jersey & goto end
+if "!area!"=="850" echo Likely location: Florida & goto end
+if "!area!"=="856" echo Likely location: New Jersey & goto end
+if "!area!"=="857" echo Likely location: Massachusetts & goto end
+if "!area!"=="858" echo Likely location: California & goto end
+if "!area!"=="859" echo Likely location: Kentucky & goto end
+if "!area!"=="860" echo Likely location: Connecticut & goto end
+if "!area!"=="862" echo Likely location: New Jersey & goto end
+if "!area!"=="863" echo Likely location: Florida & goto end
+if "!area!"=="864" echo Likely location: South Carolina & goto end
+if "!area!"=="865" echo Likely location: Knoxville, TN & goto end
+if "!area!"=="867" echo Likely location: Northern Canada & goto end
+if "!area!"=="868" echo Likely location: Trinidad and Tobago & goto end
+if "!area!"=="869" echo Likely location: Saint Kitts and Nevis & goto end
+if "!area!"=="870" echo Likely location: Arkansas & goto end
+if "!area!"=="872" echo Likely location: Chicago, IL & goto end
+if "!area!"=="878" echo Likely location: Pennsylvania & goto end
+if "!area!"=="901" echo Likely location: Memphis, TN & goto end
+if "!area!"=="902" echo Likely location: Nova Scotia, Canada & goto end
+if "!area!"=="903" echo Likely location: Texas & goto end
+if "!area!"=="904" echo Likely location: Jacksonville, FL & goto end
+if "!area!"=="905" echo Likely location: Ontario, Canada & goto end
+if "!area!"=="906" echo Likely location: Michigan & goto end
+if "!area!"=="907" echo Likely location: Alaska & goto end
+if "!area!"=="908" echo Likely location: New Jersey & goto end
+if "!area!"=="909" echo Likely location: California & goto end
+if "!area!"=="910" echo Likely location: North Carolina & goto end
+if "!area!"=="912" echo Likely location: Georgia & goto end
+if "!area!"=="913" echo Likely location: Kansas & goto end
+if "!area!"=="914" echo Likely location: New York & goto end
+if "!area!"=="915" echo Likely location: Texas & goto end
+if "!area!"=="916" echo Likely location: Sacramento, CA & goto end
+if "!area!"=="917" echo Likely location: New York, NY & goto end
+if "!area!"=="918" echo Likely location: Oklahoma & goto end
+if "!area!"=="919" echo Likely location: Raleigh, NC & goto end
+if "!area!"=="920" echo Likely location: Wisconsin & goto end
+if "!area!"=="925" echo Likely location: California & goto end
+if "!area!"=="928" echo Likely location: Arizona & goto end
+if "!area!"=="931" echo Likely location: Tennessee & goto end
+if "!area!"=="936" echo Likely location: Texas & goto end
+if "!area!"=="937" echo Likely location: Ohio & goto end
+if "!area!"=="940" echo Likely location: Texas & goto end
+if "!area!"=="941" echo Likely location: Florida & goto end
+if "!area!"=="947" echo Likely location: Michigan & goto end
+if "!area!"=="949" echo Likely location: California & goto end
+if "!area!"=="951" echo Likely location: California & goto end
+if "!area!"=="952" echo Likely location: Minnesota & goto end
+if "!area!"=="954" echo Likely location: Fort Lauderdale, FL & goto end
+if "!area!"=="956" echo Likely location: Texas & goto end
+if "!area!"=="970" echo Likely location: Colorado & goto end
+if "!area!"=="971" echo Likely location: Oregon & goto end
+if "!area!"=="972" echo Likely location: Dallas, TX & goto end
+if "!area!"=="973" echo Likely location: New Jersey & goto end
+if "!area!"=="975" echo Likely location: Missouri & goto end
+if "!area!"=="978" echo Likely location: Massachusetts & goto end
+if "!area!"=="979" echo Likely location: Texas & goto end
+if "!area!"=="980" echo Likely location: North Carolina & goto end
+if "!area!"=="984" echo Likely location: North Carolina & goto end
+if "!area!"=="985" echo Likely location: Louisiana & goto end
+if "!area!"=="986" echo Likely location: Idaho & goto end
+if "!area!"=="989" echo Likely location: Michigan & goto end
 
-(
-echo import discord
-echo import asyncio
-echo from discord.ext import commands
-echo. 
-echo intents = discord.Intents.default()
-echo intents.members = True
-echo bot = commands.Bot(command_prefix="!", intents=intents)
-echo.
-echo @bot.event
-echo async def on_ready():
-echo     with open(r"%outputfile%", "a", encoding="utf-8") as f:
-echo         f.write("\n:: ========== Discord Server Info ==========\n")
-echo         for guild in bot.guilds:
-echo             f.write(f":: Server Name: {guild.name}\n")
-echo             f.write(f":: Server ID: {guild.id}\n")
-echo             f.write(f":: Owner: {guild.owner}\n")
-echo             f.write(f":: Member Count: {guild.member_count}\n")
-echo             f.write(":: -----------------------------\n")
-echo     await bot.close()
-echo.
-echo bot.run("%token%")
-) > %pyfile%
+:notfound
+echo Area code !area! not found in list.
 
-
-python %pyfile%
-
-
-del %pyfile%
-
-echo Server info has been added to this .bat file as comments.
+:end
 pause
 goto banner
 
