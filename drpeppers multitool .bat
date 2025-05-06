@@ -5,7 +5,7 @@ chcp 65001 >nul
 title Drpeppers Multitool
 goto banner
 color 0A
-h
+
 
 :banner
 cls
