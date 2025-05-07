@@ -31,11 +31,12 @@ echo 					  7) spam a playfab	       8) create your own personal playfab BOT
 echo				  	  	  9) spam a webhook	       10) check if a webhook is valid or not
 echo					  	  11) delete a webhook	       12) send a webhook message
 echo 					  13) get webhook info	       14) ip lookup
-echo					  	  15) phone number lookup
+echo					  	  15) phone number lookup      16) port scanner
+echo						  17) website status checker   18) DNS lookup
 echo.
 echo 			════════════════════════════════════════════════════════════════════════════════════════════════════
 
-set /p choice="				Choose an option (1-15): "
+set /p choice="				Choose an option (1-18): "
 
 if "%choice%"=="1" goto ipconfig
 if "%choice%"=="2" goto notepad
@@ -52,6 +53,10 @@ if "%choice%"=="12" goto webhooksend
 if "%choice%"=="13" goto webhookinfo
 if "%choice%"=="14" goto iplookup
 if "%choice%"=="15" goto phonenumblookup
+if "%choice%"=="16" goto portscanner
+if "%choice%"=="17" goto websitechecker
+if "%choice%"=="18" goto DNSlookup
+if "%choice%"=="19" goto checkemailblacklist
 
 goto banner
 
@@ -727,6 +732,39 @@ echo Area code !area! not found in list.
 pause
 goto banner
 
+:portscanner
+@echo off
+cls
+set /p HOST=Enter host to scan: 
+set /p PORT=Enter port to check: 
+echo Checking %HOST% on port %PORT%...
+powershell -command "Test-NetConnection -ComputerName %HOST% -Port %PORT%"
+pause
+goto banner
+
+:websitechecker
+@echo off
+cls
+set /p URL=Enter website URL (e.g. https://example.com): 
+curl -Is %URL% | findstr /i "HTTP/"
+pause
+goto banner
+
+:DNSlookup
+@echo off
+cls
+set /p HOST=Enter hostname (e.g. google.com): 
+nslookup %HOST%
+pause
+goto banner
+
+:checkemailblacklist
+@echo off
+cls
+set /p DOMAIN=Enter email domain (e.g., example.com): 
+start https://dnsstuff.com/tools/blacklist.ch?ip=%DOMAIN%
+pause
+goto banner
 :exit
 cls
 echo Thank you for using Drpeppers multitool!
