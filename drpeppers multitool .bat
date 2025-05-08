@@ -33,11 +33,12 @@ echo					  	  11) delete a webhook	       12) send a webhook message
 echo 					  13) get webhook info	       14) ip lookup
 echo					  	  15) phone number lookup      16) port scanner
 echo						  17) website status checker   18) DNS lookup
-echo					      	  19) server info lookup
+echo					      	  19) server info lookup       20) send a embed webhook msg
+echo						  21) send pc info to webhook
 echo.
 echo 			════════════════════════════════════════════════════════════════════════════════════════════════════
 
-set /p choice="				Choose an option (1-19): "
+set /p choice="				Choose an option (1-21): "
 
 if "%choice%"=="1" goto ipconfig
 if "%choice%"=="2" goto notepad
@@ -58,6 +59,8 @@ if "%choice%"=="16" goto portscanner
 if "%choice%"=="17" goto websitechecker
 if "%choice%"=="18" goto DNSlookup
 if "%choice%"=="19" goto serverinfo
+if "%choice%"=="20" goto embedwebhook
+if "%choice%"=="21" goto systeminfo
 
 goto banner
 
@@ -800,6 +803,43 @@ echo.>> temp_discord_script.py
 echo asyncio.run(bot.start(bot_token)) >> temp_discord_script.py
 echo.>> temp_discord_script.py
 python temp_discord_script.py
+pause
+goto banner
+:embedwebhook
+@echo off
+cls
+setlocal enabledelayedexpansion
+
+
+set /p TITLE=Enter the embed title: 
+set /p DESC=Enter the embed description: 
+set /p COLOR=Enter the embed color (decimal, e.g. 16711680 for red): 
+set /p WEBHOOK=Paste your Discord webhook URL: 
+set "DESC=!DESC:"=\"!"
+curl -H "Content-Type: application/json" ^
+  -X POST ^
+  -d "{ \"embeds\": [ { \"title\": \"%TITLE%\", \"description\": \"%DESC%\", \"color\": %COLOR% } ] }" ^
+  %WEBHOOK%
+  
+pause
+goto banner
+endlocal
+:systeminfo
+@echo off
+setlocal
+cls
+set /p WEBHOOK_URL="webhook url(use in a private channel): "
+
+systeminfo > temp.txt
+set /p SYSINFO=<temp.txt
+
+curl -H "Content-Type: application/json" ^
+  -X POST ^
+  -d "{\"content\": \"System info uploaded.\n(Too long for Discord message box)\"}" ^
+  %WEBHOOK_URL%
+
+del temp.txt
+endlocal
 pause
 goto banner
 
