@@ -33,10 +33,11 @@ echo					  	  11) delete a webhook	       12) send a webhook message
 echo 					  13) get webhook info	       14) ip lookup
 echo					  	  15) phone number lookup      16) port scanner
 echo						  17) website status checker   18) DNS lookup
+echo					      	  19) server info lookup
 echo.
 echo 			════════════════════════════════════════════════════════════════════════════════════════════════════
 
-set /p choice="				Choose an option (1-18): "
+set /p choice="				Choose an option (1-19): "
 
 if "%choice%"=="1" goto ipconfig
 if "%choice%"=="2" goto notepad
@@ -56,7 +57,7 @@ if "%choice%"=="15" goto phonenumblookup
 if "%choice%"=="16" goto portscanner
 if "%choice%"=="17" goto websitechecker
 if "%choice%"=="18" goto DNSlookup
-if "%choice%"=="19" goto checkemailblacklist
+if "%choice%"=="19" goto serverinfo
 
 goto banner
 
@@ -94,10 +95,9 @@ goto banner
 
 :invitebot
 cls
+echo Opening invite link...
 start https://discord.com/oauth2/authorize?client_id=1356477205106130964 
 echo.
-echo Opening invite link...
-start %botlink%
 echo.
 echo ================= Bot Commands =================
 echo $nuke        - Basic command nukes the server
@@ -368,7 +368,7 @@ goto banner
 @echo off
 setlocal
 cls
-set /p WEBHOOK_URL=webhook url:
+set /p WEBHOOK_URL="webhook url: "
 
 
 powershell -Command "Invoke-RestMethod -Uri '%WEBHOOK_URL%' | ConvertTo-Json -Depth 10"
@@ -765,6 +765,44 @@ set /p DOMAIN=Enter email domain (e.g., example.com):
 start https://dnsstuff.com/tools/blacklist.ch?ip=%DOMAIN%
 pause
 goto banner
+
+:serverinfo
+@echo off
+cls
+set /p BOT_TOKEN="Enter your Discord bot token(must be in the server): "
+set /p SERVER_ID="Enter the Discord server ID: "
+cls
+echo import discord > temp_discord_script.py
+echo from discord.ext import commands >> temp_discord_script.py
+echo import asyncio >> temp_discord_script.py
+echo.>> temp_discord_script.py
+echo bot_token = "%BOT_TOKEN%" >> temp_discord_script.py
+echo server_id_to_lookup = %SERVER_ID% >> temp_discord_script.py
+echo.>> temp_discord_script.py
+echo bot = commands.Bot(command_prefix="!", intents=discord.Intents.all()) >> temp_discord_script.py
+echo.>> temp_discord_script.py
+echo @bot.event >> temp_discord_script.py
+echo async def on_ready(): >> temp_discord_script.py
+echo     try: >> temp_discord_script.py
+echo         server = discord.utils.get(bot.guilds, id=server_id_to_lookup) >> temp_discord_script.py
+echo         if server:>> temp_discord_script.py
+echo            print(f"Server Name: {server.name}") >> temp_discord_script.py
+echo            print(f"Server ID: {server.id}") >> temp_discord_script.py
+echo            print(f"Member Count: {server.member_count}") >> temp_discord_script.py
+echo            print(f"Owner: {server.owner.name}#{server.owner.discriminator}")>> temp_discord_script.py
+echo         else:>> temp_discord_script.py
+echo            print(f"Server with ID {server_id_to_lookup} not found.") >> temp_discord_script.py
+echo         await bot.close() >> temp_discord_script.py
+echo     except Exception as e: >> temp_discord_script.py
+echo         print(f"An error occurred: {e}") >> temp_discord_script.py
+echo         await bot.close() >> temp_discord_script.py
+echo.>> temp_discord_script.py
+echo asyncio.run(bot.start(bot_token)) >> temp_discord_script.py
+echo.>> temp_discord_script.py
+python temp_discord_script.py
+pause
+goto banner
+
 :exit
 cls
 echo Thank you for using Drpeppers multitool!
